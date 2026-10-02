@@ -1,0 +1,22 @@
+{
+  "name": "odin-battleships",
+  "version": "1.0.0",
+  "description": "",
+  "main": "babel.config.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osseko/odin-battleShips.git"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/osseko/odin-battleShips/issues"
+  },
+  "homepage": "https://github.com/osseko/odin-battleShips#readme",
+  "devDependencies": {
+    "jest": "^30.5.2"
+  }
+}
