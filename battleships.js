@@ -50,9 +50,6 @@ class battleBoard{
     constructor(){
         this.adjList = {};
         this.tiles = [];
-        // this.x = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-        // this.y = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
     }
 
     board(){
@@ -73,8 +70,6 @@ class battleBoard{
 
     addVertex(){
         let tileNodes = this.tiles;
-        // console.log(tileNodes)
-
         tileNodes.forEach((pair) => {
             this.adjList[pair] = [];
         })
@@ -147,22 +142,31 @@ makeGameBoard();
 
 class ships{
     constructor(){
-        this.health;
         this.fleetArr = [];
-        // this.uniqTile = [['A', 1], ['B', 3], ['C', 3], ['D', 1]];  
+        // this.uniqTile = [['A', 1], ['B', 3], ['C', 3], ['D', 1], ['E', 8], ['F', 9], ['G', 8], ['H', 1], ['I', 10], ['J', 6], ['A', 10], ['B', 9], ['D', 1]];  
         this.uniqTile = [];     
+    }
 
+    storeShips(){
+        if(this.fleetArr.length === 5){
+            
+            return;
+        } else {
+            this.carrier();
+            this.battleShip();
+            this.destroyer();
+            this.submarines();
+            this.patrolBoat();
+        }
     }
 
     findPoint(){
         function getRandVal(a){
             let val = Math.floor(Math.random() * a.length)
             return a[val];
-        }
-        
+        }     
         let xRand = getRandVal(xVal);
         let yRand = getRandVal(yVal);
-
         return [xRand, yRand]
     }
 
@@ -194,7 +198,6 @@ class ships{
         while(boardCheck !== true){
             const drawShip = this.drawDirection(point, body)
             for(const pair of drawShip){
-                // console.log(pair)
             if(pair[0] === undefined || pair[1] < 1 || pair[1] > 10){
                     boardCheck = false;
                     break;
@@ -202,447 +205,151 @@ class ships{
                     boardCheck = true;
                 }
             }
-
             if(boardCheck !== false){
                 shipBody = drawShip
             }
         }
-                
-        // for(const pair of shipBody){
-        //     console.log(pair)
-        // }
-
         return shipBody;
-
     }
 
-    uniqCheck(){
-
-    }
-    //ifuniq push
-    layOutShips(){
-        const shipCount = 5;
-        const countArr = [5, 4, 3, 3, 2]
-        let shipArr = new Array(shipCount).fill(null);
-        let start = this.findPoint();
-        let isUniq;
-        let uniqStore = [];
-        // for(let i = 0; i < shipCount; i++){
-        //  
-        //     shipArr[i] = this.drawShipLength(start, countArr[i])
-        //     // shipArr[i] = i+"ship"
-        // }
-
-        let carrier = this.drawShipLength(this.findPoint(), 5);
-        let battleShip = this.drawShipLength(this.findPoint(), 4);
-        let destroyer = this.drawShipLength(this.findPoint(), 3);
-        let submarine = this.drawShipLength(this.findPoint(), 3);
-        let patrolBoat = this.drawShipLength(this.findPoint(), 2);
-
-        // shipArr[0] = carrier;
-        // // shipArr[1] = battleShip;
-        // // shipArr[2] = destroyer;
-        // // shipArr[3] = submarine;
-        // // shipArr[4] = patrolBoat;
-        
-        // for(const pair of battleShip){
-        //     for(const pair of)
-        //     console.log(pair)
-        // }
-
-        // for(const pair of destroyer){
-        //     console.log(pair)
-        // }
-        // console.log(carrier)
-        // console.log(battleShip)
-        // console.log(destroyer)
-        // console.log(submarine)
-        // console.log(patrolBoat)
-
-        // console.log(shipArr)
-
-    }
-    layShipLength(){
-
-    }
-    //ships [[0carrier][1battleship][2destroyer][3submarines][4patrolboat]]
-    //change structure
-    carrier(){
-        let start = this.findPoint()
-        const body = 5;
-        let uniq = this.uniqTile;
-        let check;
-        // let parts = this.drawShipLength(start, body);
-        let bodyTiles = [];
-        let tempArr = [];
-        
-        while(check !== false){
-            let parts = this.drawShipLength(start, body);
-            let tempArr = [];
-            if(uniq.length === 0){
-                console.log("noUniq")
-                parts.forEach((V) =>{
-                    uniq.push(V)
-                    bodyTiles.push(V)
-                })
-                check = false;
-            } else {
-                console.log("uniqmore")
-                //checks if tileValue is not unique
-                for(const U of parts){
-                // console.log("U", U)
-                uniq.forEach((x) => {
-                    // console.log("x", x)
-                    if(x[0] === U[0] && x[1] === U[1]){
-                        // console.log("break here")
-                        check = true;
-                        bodyTiles = [];
-                    } else {
-                        check = false;
-                    }
-                    })
-                }
-
-                 if(check === false){
-                    parts.forEach((V) =>{
-                        uniq.push(V)
-                        bodyTiles.push(V)
-                    })
+    uniqCheck(arr, tileSet){
+        let result;
+        if(tileSet.length === 0){
+            result = true;
+        }else if(tileSet.length > 1){
+            for(let i = 0; i < tileSet.length; i++){
+                if(arr[0] === tileSet[i][0] && arr[1] === tileSet[i][1]){
+                    result = false;
+                    break;
+                } else {
+                    result = true;
                 }
             }
         }
-        console.log(bodyTiles)
+        return result;
+    }
+
+    drawUniqShipTile(body, bodyTiles){
+        let isUniq;
+        let stored = [];
+
+        while(bodyTiles.length !== body){
+            
+            this.drawShipLength(this.findPoint(), body)
+                .forEach((P) => {
+                    stored.push(P)
+                })
+
+            stored.forEach((V) => {
+                isUniq = this.uniqCheck(V, this.uniqTile);
+                if(isUniq === false){
+                    bodyTiles = [];
+                    stored = [];
+                } else {
+                    bodyTiles.push(V);
+                }
+            })
+           
+            if(bodyTiles.length === body){
+                bodyTiles.forEach((p)=>{
+                    this.uniqTile.push(p);
+                })    
+            }
+        }   
+    }
+
+    carrier(){
+  
+        const body = 5;  
+        let bodyTiles = [];
+        this.drawUniqShipTile(body, bodyTiles)
+
         this.fleetArr.push(bodyTiles)
+            //   console.log("uniq", bodyTiles)
     }
 
     battleShip(){
-        let start = this.findPoint()
-        const body = 4;
-        let uniq = this.uniqTile;
-        let check;
-        // let parts = this.drawShipLength(start, body);
-        let bodyTiles = [];
-        let tempArr = [];
-        
-        while(check !== false){
-            let parts = this.drawShipLength(start, body);
-            let tempArr = [];
-            if(uniq.length === 0){
-                console.log("noUniq")
-                parts.forEach((V) =>{
-                    uniq.push(V)
-                    bodyTiles.push(V)
-                })
-                check = false;
-            } else {
-                console.log("uniqmore")
-                //checks if tileValue is not unique
-                for(const U of parts){
-                // console.log("U", U)
-                uniq.forEach((x) => {
-                    // console.log("x", x)
-                    if(x[0] === U[0] && x[1] === U[1]){
-                        // console.log("break here")
-                        check = true;
-                        bodyTiles = [];
-                    } else {
-                        check = false;
-                    }
-                    })
-                }
 
-                 if(check === false){
-                    parts.forEach((V) =>{
-                        uniq.push(V)
-                        bodyTiles.push(V)
-                    })
-                }
-            }
-        }
-        console.log(bodyTiles)
+        const body = 4;  
+        let bodyTiles = [];
+
+        this.drawUniqShipTile(body, bodyTiles)
+
         this.fleetArr.push(bodyTiles)
+                // console.log("uniq", bodyTiles)
     }
 
     destroyer(){
-        let start = this.findPoint()
-        const body = 3;
-        let uniq = this.uniqTile;
-        let check;
-        // let parts = this.drawShipLength(start, body);
-        let bodyTiles = [];
-        let tempArr = [];
-        
-        while(check !== false){
-            let parts = this.drawShipLength(start, body);
-            let tempArr = [];
-            if(uniq.length === 0){
-                console.log("noUniq")
-                parts.forEach((V) =>{
-                    uniq.push(V)
-                    bodyTiles.push(V)
-                })
-                check = false;
-            } else {
-                console.log("uniqmore")
-                //checks if tileValue is not unique
-                for(const U of parts){
-                // console.log("U", U)
-                uniq.forEach((x) => {
-                    // console.log("x", x)
-                    if(x[0] === U[0] && x[1] === U[1]){
-                        // console.log("break here")
-                        check = true;
-                        bodyTiles = [];
-                    } else {
-                        check = false;
-                    }
-                    })
-                }
 
-                 if(check === false){
-                    parts.forEach((V) =>{
-                        uniq.push(V)
-                        bodyTiles.push(V)
-                    })
-                }
-            }
-        }
-        console.log(bodyTiles)
+        const body = 3;  
+        let bodyTiles = [];
+
+        this.drawUniqShipTile(body, bodyTiles)
+
         this.fleetArr.push(bodyTiles)
+                // console.log("uniq", bodyTiles)
     }
 
     submarines(){
-        let start = this.findPoint()
-        const body = 3;
-        let uniq = this.uniqTile;
-        let check;
-        // let parts = this.drawShipLength(start, body);
-        let bodyTiles = [];
-        let tempArr = [];
-        
-        while(check !== false){
-            let parts = this.drawShipLength(start, body);
-            let tempArr = [];
-            if(uniq.length === 0){
-                console.log("noUniq")
-                parts.forEach((V) =>{
-                    uniq.push(V)
-                    bodyTiles.push(V)
-                })
-                check = false;
-            } else {
-                console.log("uniqmore")
-                //checks if tileValue is not unique
-                for(const U of parts){
-                // console.log("U", U)
-                uniq.forEach((x) => {
-                    // console.log("x", x)
-                    if(x[0] === U[0] && x[1] === U[1]){
-                        // console.log("break here")
-                        check = true;
-                        bodyTiles = [];
-                    } else {
-                        check = false;
-                    }
-                    })
-                }
 
-                 if(check === false){
-                    parts.forEach((V) =>{
-                        uniq.push(V)
-                        bodyTiles.push(V)
-                    })
-                }
-            }
-        }
-        console.log(bodyTiles)
+        const body = 3;  
+        let bodyTiles = [];
+  
+        this.drawUniqShipTile(body, bodyTiles)
+
         this.fleetArr.push(bodyTiles)
+                // console.log("uniq", bodyTiles)
     }
 
     patrolBoat(){
-        let start = this.findPoint()
-        const body = 2;
-        let uniq = this.uniqTile;
-        let check;
-        // let parts = this.drawShipLength(start, body);
-        let bodyTiles = [];
-        let tempArr = [];
-        
-        while(check !== false){
-            let parts = this.drawShipLength(start, body);
-            let tempArr = [];
-            if(uniq.length === 0){
-                console.log("noUniq")
-                parts.forEach((V) =>{
-                    uniq.push(V)
-                    bodyTiles.push(V)
-                })
-                check = false;
-            } else {
-                console.log("uniqmore")
-                //checks if tileValue is not unique
-                for(const U of parts){
-                // console.log("U", U)
-                uniq.forEach((x) => {
-                    // console.log("x", x)
-                    if(x[0] === U[0] && x[1] === U[1]){
-                        // console.log("break here")
-                        check = true;
-                        bodyTiles = [];
-                    } else {
-                        check = false;
-                    }
-                    })
-                }
 
-                 if(check === false){
-                    parts.forEach((V) =>{
-                        uniq.push(V)
-                        bodyTiles.push(V)
-                    })
-                }
-            }
-        }
-        console.log(bodyTiles)
+        const body = 2;  
+        let bodyTiles = [];
+  
+        this.drawUniqShipTile(body, bodyTiles)
+
         this.fleetArr.push(bodyTiles)
+                // console.log("uniq", bodyTiles)
     }
 
-    // battleShip(){
-    //     let start = this.findPoint()
-    //     const body = 4;
-    //     let uniq = this.uniqTile;
-    //     let check;
-    //     // let parts = this.drawShipLength(start, body);
-    //     let bodyTiles = [];
-    //     let tempArr = [];
-        
-    //     while(check !== false){
-    //         let parts = this.drawShipLength(start, body);
-    //         let tempArr = [];
-    //         if(uniq.length < 1){
-    //             parts.forEach((V) =>{
-    //                 uniq.push(V)
-    //                 bodyTiles.push(V)
-    //             })
-    //         } else {
-    //             //checks if tileValue is not unique
-    //             for(const U of parts){
-    //             // console.log("U", U)
-    //             uniq.forEach((x) => {
-    //                 // console.log("x", x)
-    //                 if(x[0] === U[0] && x[1] === U[1]){
-    //                     // console.log("break here")
-    //                     bodyTiles = [];
-    //                 } else {
-    //                     check = false;
-    //                 }
-    //             })
-
-    //         }
-
-    //             if(check === false){
-    //                 parts.forEach((V) =>{
-    //                     uniq.push(V)
-    //                     bodyTiles.push(V)
-    //                 })
-    //             }
-    //         }
-    //     }
-    //     console.log(bodyTiles)
-    //     this.fleetArr.push(bodyTiles)
-    // }
-
-    // destroyer(){
-    //     let start = this.findPoint()
-    //     const body = 3;
-    //     let uniq = this.uniqTile;
-    //     let check;
-    //     // let parts = this.drawShipLength(start, body);
-    //     let bodyTiles = [];
-    //     let tempArr = [];
-        
-    //     while(check !== false){
-    //         let parts = this.drawShipLength(start, body);
-    //         let tempArr = [];
-    //         if(uniq.length < 1){
-    //             parts.forEach((V) =>{
-    //                 uniq.push(V)
-    //                 bodyTiles.push(V)
-    //             })
-    //         } else {
-    //             //checks if tileValue is not unique
-    //             for(const U of parts){
-    //             // console.log("U", U)
-    //             uniq.forEach((x) => {
-    //                 // console.log("x", x)
-    //                 if(x[0] === U[0] && x[1] === U[1]){
-    //                     // console.log("break here")
-    //                     bodyTiles = [];
-    //                 } else {
-    //                     check = false;
-    //                 }
-    //             })
-
-    //         }
-
-    //             if(check === false){
-    //                 parts.forEach((V) =>{
-    //                     uniq.push(V)
-    //                     bodyTiles.push(V)
-    //                 })
-    //             }
-    //         }
-    //     }
-    //     console.log(bodyTiles)
-    //     this.fleetArr.push(bodyTiles)
-    // }
-
-
-    // battleShip(){
-    //     let start = this.findPoint()
-    //     const body = 4;
-
-    //      this.drawShipLength(start, body)
-
-    // }
-
-    // destroyer(){
-    //     let start = this.findPoint()
-    //     const body = 3;
-
-    //      this.drawShipLength(start, body)
-
-    // }
-
-    // submarines(){
-    //     let start = this.findPoint()
-    //     const body =3;
-
-    //      this.drawShipLength(start, body)
-        
-    // }
-
-    // patrolBoat(){
-    //     let start = this.findPoint()
-    //     const body =2;
-
-    //     this.drawShipLength(start, body)
-
-    // }
-      //carrier 5 nodes battleship 4 nodes destroyer 3 nodes submarines 3 nodes patrolbaot 2 nodes
 }
 
 let ship = new ships();
 console.log(ship)
-console.log(ship.carrier());
-console.log(ship.battleShip());
-console.log(ship.destroyer());
-console.log(ship.submarines());
-console.log(ship.patrolBoat());
-// console.log(ship.layOutShips());
+let callShips = ship.storeShips();
+let fleetArr = ship.fleetArr;
+let allShipArr = ship.uniqTile;
+console.log(fleetArr)
+console.log(allShipArr)
 
-console.log(ship.uniqTile);
-// function sum(a, b){
-//     return a + b;
-// }
-// module.exports = sum;
+function isUniq(shipArr){
+    const arr = shipArr
+    let index = 0;
+
+
+    for(let i = 0; i < arr.length; i++){
+        arr.forEach((V) =>{
+            if(arr[i][0] === V[0] && arr[i][1] === V[1]){
+                index++
+            }
+        })
+        if(index > 1){
+            console.log(arr[i])
+            break;
+        }
+        index = 0;
+    }
+    if(index >1){
+        return false;
+    } else {
+        return true;
+    }
+    
+}
+
+module.exports = {
+    ship,
+    callShips,
+    isUniq,
+}
+
