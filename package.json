@@ -2,21 +2,27 @@
   "name": "odin-battleships",
   "version": "1.0.0",
   "description": "",
-  "main": "babel.config.js",
+  "main": "index.js",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "test": "jest"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/osseko/odin-battleShips.git"
   },
   "keywords": [],
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/osseko/odin-battleShips/issues"
   },
   "homepage": "https://github.com/osseko/odin-battleShips#readme",
   "devDependencies": {
-    "jest": "^30.5.2"
+    "webpack": "^5.112.0",
+    "webpack-cli": "^7.2.3"
+  },
+  "dependencies": {
+    "lodash": "^4.18.1"
   }
 }

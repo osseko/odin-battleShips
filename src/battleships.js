@@ -46,104 +46,15 @@
 const xVal = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 const yVal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-class battleBoard{
-    constructor(){
-        this.adjList = {};
-        this.tiles = [];
-    }
-
-    board(){
-        let bx = xVal;
-        let by = yVal;
-        let tilePair = [];
-        let boardTiles = [];
-
-        for(const a of bx){
-            for(const b of by){
-                tilePair = [a, b]
-                boardTiles.push(tilePair);
-            } 
-        }
-       
-        this.tiles = boardTiles;
-    } 
-
-    addVertex(){
-        let tileNodes = this.tiles;
-        tileNodes.forEach((pair) => {
-            this.adjList[pair] = [];
-        })
-    }
-
-    addEdge(ver1, ver2){
-        this.adjList[ver1].push(ver2);
-        // this.adjList[ver2].push(ver1);
-    }
-
-    findNeighbor(tile, letterRow, letterIndex){
-        let neighbors = [];
-
-        neighbors.push([letterRow[letterIndex], tile[1]-1])
-        neighbors.push([letterRow[letterIndex + 1], tile[1]])
-        neighbors.push([letterRow[letterIndex], tile[1]+1])
-        neighbors.push([letterRow[letterIndex - 1], tile[1]])
-        
-        return neighbors;
-    }
-
-    makeVertex(){  
-        const xArr = xVal;
-        const tiles = this.tiles;
-
-        for(let i = 0; i < tiles.length; i++){
-            let tempNeighbor = [];
-            let letterIndex = xArr.indexOf(tiles[i][0])
-            let nextTiles = (this.findNeighbor(tiles[i], xArr, letterIndex))
-            nextTiles.forEach((neighbor) => {
-                if(neighbor[0] !== undefined && neighbor[1] >= 1 && neighbor[1] <= 10){
-                    tempNeighbor.push(neighbor)
-                }
-            })
-            tempNeighbor.forEach((newTiles) =>{
-                this.addEdge(tiles[i], newTiles)
-            })
-            tempNeighbor = [];    
-        }
-    
-    }
-
-    printGraph(){
-
-        for(const vertex in this.adjList){
-       
-            console.log(`${vertex} -> ${this.adjList[vertex].join(', ')}`)       
-        }       
-    }
-
-}
-
 class PlayerTools{
     constructor(){
 
     }
 }
 
-
-let shipBoard = new battleBoard();
-
-const makeGameBoard = function(){
-    shipBoard.board();
-    shipBoard.addVertex();
-    shipBoard.makeVertex();
-    // shipBoard.printGraph();
-}
-makeGameBoard();
-
-
 class ships{
     constructor(){
         this.fleetArr = [];
-        // this.uniqTile = [['A', 1], ['B', 3], ['C', 3], ['D', 1], ['E', 8], ['F', 9], ['G', 8], ['H', 1], ['I', 10], ['J', 6], ['A', 10], ['B', 9], ['D', 1]];  
         this.uniqTile = [];     
     }
 
@@ -252,75 +163,146 @@ class ships{
            
             if(bodyTiles.length === body){
                 bodyTiles.forEach((p)=>{
-                    this.uniqTile.push(p);
-                })    
+                    this.uniqTile.push(p);   
+                })
+                this.fleetArr.push(bodyTiles);    
             }
         }   
     }
 
     carrier(){
-  
         const body = 5;  
         let bodyTiles = [];
         this.drawUniqShipTile(body, bodyTiles)
-
-        this.fleetArr.push(bodyTiles)
-            //   console.log("uniq", bodyTiles)
     }
 
     battleShip(){
-
         const body = 4;  
         let bodyTiles = [];
 
         this.drawUniqShipTile(body, bodyTiles)
-
-        this.fleetArr.push(bodyTiles)
-                // console.log("uniq", bodyTiles)
     }
 
     destroyer(){
-
         const body = 3;  
         let bodyTiles = [];
 
         this.drawUniqShipTile(body, bodyTiles)
-
-        this.fleetArr.push(bodyTiles)
-                // console.log("uniq", bodyTiles)
     }
 
     submarines(){
-
         const body = 3;  
         let bodyTiles = [];
   
         this.drawUniqShipTile(body, bodyTiles)
-
-        this.fleetArr.push(bodyTiles)
-                // console.log("uniq", bodyTiles)
     }
 
     patrolBoat(){
-
         const body = 2;  
         let bodyTiles = [];
   
         this.drawUniqShipTile(body, bodyTiles)
-
-        this.fleetArr.push(bodyTiles)
-                // console.log("uniq", bodyTiles)
     }
 
 }
 
 let ship = new ships();
-console.log(ship)
-let callShips = ship.storeShips();
-let fleetArr = ship.fleetArr;
-let allShipArr = ship.uniqTile;
-console.log(fleetArr)
-console.log(allShipArr)
+ship.storeShips();
+const allFleet = ship.fleetArr;
+console.log(ship.fleetArr)
+
+class playerBoardAndPosition{
+    constructor(){
+        this.tiles = [];
+        this.adjList = {};
+        this.fleet;
+        this.callArr = allFleet;
+    }
+
+    board(){
+        let bx = xVal;
+        let by = yVal;
+        let tilePair = [];
+        let boardTiles = [];
+
+        for(const a of bx){
+            for(const b of by){
+                tilePair = [a, b]
+                boardTiles.push(tilePair);
+            } 
+        }
+        this.tiles = boardTiles;
+    } 
+
+    addVertex(){
+        let tileNodes = this.tiles;
+        tileNodes.forEach((pair) => {
+            this.adjList[pair] = [];
+        })
+    }
+
+    placeShips(){
+        let carrier = this.callArr[0];
+        let battleShip = this.callArr[1];
+        let destroyer = this.callArr[2];
+        let submarine = this.callArr[3];
+        let patrolBoat = this.callArr[4];
+        
+        carrier.forEach((x) => {
+            this.shipPosition(x, "Crr");
+        })
+
+        battleShip.forEach((x) => {
+            this.shipPosition(x, "Btl");
+        })
+        
+        destroyer.forEach((x) => {
+            this.shipPosition(x, "Dst");
+        })
+
+        submarine.forEach((x) => {
+            this.shipPosition(x, "Sbm");
+        })
+
+        patrolBoat.forEach((x) => {
+            this.shipPosition(x, "Plb");
+        })
+
+        this.shipPosition(['A', 8], "sample")
+    }
+
+    shipPosition(tile, shipType){
+        this.adjList[tile].push(shipType);
+    }
+
+    printGraph(){
+
+        for(const vertex in this.adjList){
+       
+            console.log(`${vertex} -> ${this.adjList[vertex].join(', ')}`)       
+        }       
+    }
+}
+
+
+
+let plPosition = new playerBoardAndPosition();
+plPosition.board();
+plPosition.addVertex();
+console.log(plPosition);
+
+console.log(plPosition.placeShips());
+plPosition.adjList[["A", 8]].pop();
+console.log("adJPredict", plPosition.adjList[["A", 8]])
+plPosition.printGraph();
+
+
+
+function removeBoat(tileHIt){
+    //choose tile coordinate
+    //reassign adjList = [];
+    plPosition.adjList[[tileHIt]].pop();
+}
 
 function isUniq(shipArr){
     const arr = shipArr
@@ -348,8 +330,8 @@ function isUniq(shipArr){
 }
 
 module.exports = {
+    ships,
     ship,
-    callShips,
     isUniq,
 }
 
