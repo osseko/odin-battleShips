@@ -1,0 +1,1 @@
+{"version":3,"file":"main.css","mappings":";;;AAAA;AACA;AACA;;AAEA;AACA;AACA,C","sources":["webpack://odin-battleships/./src/main.css"],"sourcesContent":["h1 {\n  color: #58606b;\n}\n\nbody{\n  background-color: aqua;\n}"],"names":[],"sourceRoot":""}
