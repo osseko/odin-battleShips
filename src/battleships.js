@@ -58,7 +58,7 @@
 //     }
 // }
 
-class ships{
+export class ships{
     constructor(){
         this.xVal = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         this.yVal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -214,99 +214,6 @@ class ships{
 
 }
 
-// let ship = new ships();
-// ship.storeShips();
-// const allFleet = ship.fleetArr;
-// console.log(ship)
-// console.log(ship.fleetArr)
-
-// class playerBoardAndPosition{
-//     constructor(){
-//         this.tiles = [];
-//         this.adjList = {};
-//         this.fleet;
-//         this.callArr = allFleet;
-//     }
-
-//     board(){
-//         let bx = xVal;
-//         let by = yVal;
-//         let tilePair = [];
-//         let boardTiles = [];
-
-//         for(const a of bx){
-//             for(const b of by){
-//                 tilePair = [a, b]
-//                 boardTiles.push(tilePair);
-//             } 
-//         }
-//         this.tiles = boardTiles;
-//     } 
-
-//     addVertex(){
-//         let tileNodes = this.tiles;
-//         tileNodes.forEach((pair) => {
-//             this.adjList[pair] = [];
-//         })
-//     }
-
-//     placeShips(){
-//         let carrier = this.callArr[0];
-//         let battleShip = this.callArr[1];
-//         let destroyer = this.callArr[2];
-//         let submarine = this.callArr[3];
-//         let patrolBoat = this.callArr[4];
-        
-//         carrier.forEach((x) => {
-//             this.shipPosition(x, "Crr");
-//         })
-
-//         battleShip.forEach((x) => {
-//             this.shipPosition(x, "Btl");
-//         })
-        
-//         destroyer.forEach((x) => {
-//             this.shipPosition(x, "Dst");
-//         })
-
-//         submarine.forEach((x) => {
-//             this.shipPosition(x, "Sbm");
-//         })
-
-//         patrolBoat.forEach((x) => {
-//             this.shipPosition(x, "Plb");
-//         })
-
-//         this.shipPosition(['A', 8], "sample")
-//     }
-
-//     shipPosition(tile, shipType){
-//         this.adjList[tile].push(shipType);
-//     }
-
-//     printGraph(){
-
-//         for(const vertex in this.adjList){
-       
-//             console.log(`${vertex} -> ${this.adjList[vertex].join(', ')}`)       
-//         }       
-//     }
-// }
-
-
-
-// let plPosition = new playerBoardAndPosition();
-// plPosition.board();
-// plPosition.addVertex();
-// console.log(plPosition);
-
-// console.log(plPosition.placeShips());
-// plPosition.adjList[["A", 8]].pop();
-// console.log("adJPredict", plPosition.adjList[["A", 8]])
-// plPosition.printGraph();
-
-
-
 // function removeBoat(tileHIt){
 //     //choose tile coordinate
 //     //reassign adjList = [];
@@ -375,40 +282,46 @@ export class playerStatus{
         })
     }
 
-    randomShip(){
-        let randomShips = new ships();
-        randomShips.storeShips();
-        let storeShips = randomShips.fleetArr;
-        this.fleet = storeShips;
+    emptyBoard(){
+        this.tileArr.forEach((e) => {
+            this.tileList[e].pop();
+        }) 
     }
 
-    randomShipPlacement(){
-        let carrier = this.fleet[0];
-        let battleShip = this.fleet[1];
-        let destroyer = this.fleet[2];
-        let submarine = this.fleet[3];
-        let patrolBoat = this.fleet[4];
+    // randomShip(){
+    //     let randomShips = new ships();
+    //     randomShips.storeShips();
+    //     let storeShips = randomShips.fleetArr;
+    //     this.fleet = storeShips;
+    // }
 
-        carrier.forEach((v) =>{
-            this.placeShipOnBoard(v, "Crr");
-        })
+    // randomShipPlacement(){
+    //     let carrier = this.fleet[0];
+    //     let battleShip = this.fleet[1];
+    //     let destroyer = this.fleet[2];
+    //     let submarine = this.fleet[3];
+    //     let patrolBoat = this.fleet[4];
 
-        battleShip.forEach((v) =>{
-            this.placeShipOnBoard(v, "Btl");
-        })
+    //     carrier.forEach((v) =>{
+    //         this.placeShipOnBoard(v, "Crr");
+    //     })
 
-        destroyer.forEach((v) =>{
-            this.placeShipOnBoard(v, "Dst");
-        })
+    //     battleShip.forEach((v) =>{
+    //         this.placeShipOnBoard(v, "Btl");
+    //     })
 
-        submarine.forEach((v) =>{
-            this.placeShipOnBoard(v, "Sbm");
-        })
+    //     destroyer.forEach((v) =>{
+    //         this.placeShipOnBoard(v, "Dst");
+    //     })
 
-        patrolBoat.forEach((v) =>{
-            this.placeShipOnBoard(v, "Ptb");
-        })
-    }
+    //     submarine.forEach((v) =>{
+    //         this.placeShipOnBoard(v, "Sbm");
+    //     })
+
+    //     patrolBoat.forEach((v) =>{
+    //         this.placeShipOnBoard(v, "Ptb");
+    //     })
+    // }
 
     placeShipOnBoard(tile, shipType){
         this.tileList[tile].push(shipType);
@@ -441,9 +354,10 @@ export class playerStatus{
 }
 
 let player1 = new playerStatus()
-player1.makeTiles();
-player1.randomShip();
-player1.randomShipPlacement();
+// player1.makeTiles();
+// player1.randomShip();
+// player1.emptyBoard();
+// player1.randomShipPlacement();
 // player1.printGraph();
 // console.log(player1.tileList);
 
@@ -455,4 +369,4 @@ player1.randomShipPlacement();
 //     isUniq,
 // }
 
-//break
+//break 
