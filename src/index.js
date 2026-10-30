@@ -169,65 +169,132 @@ function manualBoard(makeRandom){
    
 }
 function verticalSelect(){
-    const xVal = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-    const yVal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
-    let coordinates = [];
-    let arrPairs = play1tileArr.reverse();
-    let cTile; 
-    for(let i = 0; i < play1tileArr.length; i++){
-
-      let xTile = arrPairs[i][0];
-      let yTile = arrPairs[i][1];
-
-      let xPlace = xVal.indexOf(xTile);
-
-      cTile = document.getElementById(arrPairs[i]);
-    
-      for(let j = 0; j < 5; j++){
-        cTile.addEventListener("click", () => {
-          if(yTile >=1 && yTile <= 10 && xPlace >=1 && xPlace <=10){
-            document.getElementById([xVal[xPlace], yTile+j]).style.backgroundColor = "yellow";    
-          }
-        
-        })
-      }
+  const xVal = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+  const yVal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  let arrPairs = play1tileArr.reverse();
+  let cTile; 
+  
+  for(let i = 0; i < play1tileArr.length; i++){
+    let xTile = arrPairs[i][0];
+    let yTile = arrPairs[i][1];
+    let xPlace = xVal.indexOf(xTile);
+    let yPlace = yVal.indexOf(yTile);
+    let mouseArr = [];
+    let adjust = 2;
+    let leaveArr = [];
+    cTile = document.getElementById([arrPairs[i]]);
+    for(let j = 0; j < 5; j++){
       
-    }
-
-
-    
-    // let startPoint = arr;
-    // let arr0Index = this.xVal.indexOf(startPoint[0]);
-    // let arr1Index = startPoint[1];
-    // let index = 0;
-    // let upDir = [startPoint];
-    // let rightDir = [startPoint];
-    // let downDir = [startPoint];
-    // let leftDir = [startPoint];
-    // while(index < body-1){
-    //     upDir.push([this.xVal[arr0Index], arr1Index-(1 + index)]);
-    //     rightDir.push([this.xVal[arr0Index+(1+index)], arr1Index]);
-    //     downDir.push([this.xVal[arr0Index], arr1Index+(1+index)]);
-    //     leftDir.push([this.xVal[arr0Index-(1+index)], arr1Index]);
-    //     index++
-    // }
-    // const stored = [upDir, rightDir, downDir, leftDir]
-    // const randFactor = Math.floor(Math.random() * stored.length);
-    // return stored[randFactor]
-//store projected direction
-//filter
-//push to tileLIst{}
-//affect css
-
-//foreach
-    //function
-      //for loop ship.length
-      //uniqcheck
-      //playertileset[shipX].pushp(ship)
-    
-
+      let tempArr = [xVal[xPlace], (yVal[yPlace] - adjust) + j];
+  
+      cTile.addEventListener("mouseover", () => {
+        mouseArr.push(tempArr);
+        let yCatch = [];
+        let adjustedY = [];
+          if(mouseArr.length === 5){
+            mouseArr.forEach((x) => {
+              yCatch.push(x[1]);
+            })
+          }
+          if(yCatch.length === 5){
+            let adjustF = 0;
+            if(yCatch[yCatch.length-1] > 10){
+              adjustF = 10 - yCatch[yCatch.length-1];
+            } else if(yCatch[0] === 0){
+              adjustF = 1
+            } else if(yCatch[0] === -1){
+              adjustF = 2
+            } else {
+              adjust = 0;
+            }
+            yCatch.forEach((p) => {
+              adjustedY.push(p + adjustF);
+            })
+          }
+          if(adjustedY.length === 5){
+            adjustedY.forEach((L) => {
+              leaveArr.push([mouseArr[j][0], L]);
+              document.getElementById([mouseArr[j][0], L]).style.backgroundColor = "yellow"; 
+            })
+          }
+      })
+      cTile.addEventListener("mouseleave", ()=> {
+        leaveArr.forEach((p) => {
+            document.getElementById([p[0], p[1]]).style.backgroundColor = "blanchedAlmond"; 
+        })
+        mouseArr = [];
+      })
+    }  
+  }   
 }
+
+function horizonSelect(){
+  const xVal = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+  const yVal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  let arrPairs = play1tileArr.reverse();
+  let cTile; 
+  
+  for(let i = 0; i < play1tileArr.length; i++){
+    let xTile = arrPairs[i][0];
+    let yTile = arrPairs[i][1];
+    let xPlace = xVal.indexOf(xTile);
+    let yPlace = yVal.indexOf(yTile);
+    let mouseArr = [];
+    let adjust = 2;
+    let leaveArrX = [];
+    cTile = document.getElementById([arrPairs[i]]);
+    for(let j = 0; j < 5; j++){
+      
+      let tempArr = [xVal[xPlace+adjust-j], (yVal[yPlace])];
+  
+      cTile.addEventListener("mouseover", () => {
+        mouseArr.push(tempArr);
+
+        let xCatch = [];
+        let xIndex = [];
+          if(mouseArr.length === 5){
+            mouseArr.forEach((x) => {
+              xCatch.push(x[0]);
+              let xNum = xVal.indexOf(x[0]);
+              xIndex.push(xNum);
+            })
+          }
+          let cFactor = 0;
+          let shortArr = [];
+          xIndex.forEach((r) => {
+            if(r === -1){
+              cFactor++;
+            } else {
+              shortArr.push(r);
+            }
+          })
+          if(shortArr[shortArr.length-1] === 0){
+            while(shortArr.length < 5){
+              shortArr.unshift(shortArr[0]+1);
+            }
+          } else if(shortArr[0] >= 9){
+            while(shortArr.length < 5){
+              shortArr.push(shortArr[shortArr.length-1] - 1);
+            }
+          }
+          if(xIndex.length === 5){
+            shortArr.forEach((p) => {
+              leaveArrX.push([xVal[p], tempArr[1]]);
+              document.getElementById([xVal[p], tempArr[1]]).style.backgroundColor = "yellow";
+            })
+          }
+      })
+      cTile.addEventListener("mouseleave", ()=> {
+        leaveArrX.forEach((p) => {
+            document.getElementById([p[0], p[1]]).style.backgroundColor = "blanchedAlmond"; 
+        })
+        mouseArr = [];
+      })
+    }  
+  }   
+}
+
+
 
 const drawShipCard = document.createElement("div");
 
@@ -287,7 +354,7 @@ manualPlace.addEventListener("click", () => {
   }
   player1.emptyBoard();
   manualBoard(player1.tileList);
-  verticalSelect();
+
 
 })
 
@@ -307,7 +374,13 @@ okPlace.addEventListener("click", () => {
 })
 
 vertical.addEventListener("click", () => {
+    verticalSelect();
   
+})
+
+horizontal.addEventListener("click", () => {
+    horizonSelect();
+
 })
 
 const manualShips = document.createElement("div");
