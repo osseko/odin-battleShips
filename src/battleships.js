@@ -257,7 +257,7 @@ export class playerStatus{
         this.tileList = {};
         this.tileArr = [];
         this.health;
-        this.fleet;
+        this.fleet = [];
             //fl[0]= carrier fl[1]= battleship fl[2] = destroyer fl[3] = submarine fl[4] = patrolboat 
 
         this.boardPlacement;
