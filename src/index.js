@@ -121,6 +121,8 @@ function manualBoard(makeRandom){
     playerBox.appendChild(playerTiles);
   
   }
+
+  //place dragndrop function here
    
 }
 
@@ -144,42 +146,13 @@ function verticalSelect(shipBody, center){
       let tempArr = [xVal[xPlace], (yVal[yPlace] - adjust) + j];
   
       cTile.addEventListener("mouseover", () => {
-        mouseArr.push(tempArr);
-        let yCatch = [];
-        let adjustedY = [];
-          if(mouseArr.length === shipBody){
-            mouseArr.forEach((x) => {
-              yCatch.push(x[1]);
-            })
-          }
-          if(yCatch.length === shipBody){
-            let adjustF = 0;
-            if(yCatch[yCatch.length-1] > 10){
-              adjustF = 10 - yCatch[yCatch.length-1];
-            } else if(yCatch[0] === 0){
-              adjustF = 1
-            } else if(yCatch[0] === -1){
-              adjustF = 2
-            } else {
-              adjust = 0;
-            }
-            yCatch.forEach((p) => {
-              adjustedY.push(p + adjustF);
-            })
-          }
-          if(adjustedY.length === shipBody){
-            adjustedY.forEach((L) => {
-              leaveArr.push([mouseArr[j][0], L]);
-              document.getElementById([mouseArr[j][0], L]).style.backgroundColor = "yellow"; 
-            })
-          }
+        vertHighlight(mouseArr, tempArr, shipBody, leaveArr, adjust, j);
+       
       })
  
       cTile.addEventListener("mouseleave", ()=> {
-        leaveArr.forEach((p) => {
-            document.getElementById([p[0], p[1]]).style.backgroundColor = "blanchedAlmond"; 
-        })
-        mouseArr = [];
+        noHightlight(leaveArr, mouseArr);
+
       })
 
      
@@ -189,6 +162,7 @@ function verticalSelect(shipBody, center){
           document.getElementById([p[0], p[1]]).style.backgroundColor = "blue"; 
         })
         console.log(leaveArr);
+        mouseArr = [];
         leaveArr = [];
       }) 
   }   
@@ -199,7 +173,7 @@ function horizonSelect(shipBody, center){
   const yVal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   let arrPairs = play1tileArr.reverse();
   let cTile; 
-  
+
   for(let i = 0; i < play1tileArr.length; i++){
     let xTile = arrPairs[i][0];
     let yTile = arrPairs[i][1];
@@ -213,51 +187,15 @@ function horizonSelect(shipBody, center){
       
       let tempArr = [xVal[xPlace+adjust-j], (yVal[yPlace])];
   
-      cTile.addEventListener("mouseover", () => {
-        mouseArr.push(tempArr);
-
-        let xCatch = [];
-        let xIndex = [];
-          if(mouseArr.length === shipBody){
-            mouseArr.forEach((x) => {
-              xCatch.push(x[0]);
-              let xNum = xVal.indexOf(x[0]);
-              xIndex.push(xNum);
-            })
-          }
-          let cFactor = 0;
-          let shortArr = [];
-          xIndex.forEach((r) => {
-            if(r === -1){
-              cFactor++;
-            } else {
-              shortArr.push(r);
-            }
-          })
-          if(shortArr[shortArr.length-1] === 0){
-            while(shortArr.length < shipBody){
-              shortArr.unshift(shortArr[0]+1);
-            }
-          } else if(shortArr[0] >= 9){
-            while(shortArr.length < shipBody){
-              shortArr.push(shortArr[shortArr.length-1] - 1);
-            }
-          }
-          if(xIndex.length === shipBody){
-            shortArr.forEach((p) => {
-              leaveArrX.push([xVal[p], tempArr[1]]);
-              document.getElementById([xVal[p], tempArr[1]]).style.backgroundColor = "yellow";
-            })
-          }
+      cTile.addEventListener("mouseover", () => { 
+        horzHightlight(mouseArr, tempArr, shipBody, leaveArrX, xVal)
       })
       cTile.addEventListener("mouseleave", ()=> {
-        leaveArrX.forEach((p) => {
-            document.getElementById([p[0], p[1]]).style.backgroundColor = "blanchedAlmond"; 
-        })
-        mouseArr = [];
+        noHightlight(leaveArrX, mouseArr);
       })
     } 
     cTile.addEventListener("click", () => {
+     
         leaveArrX.forEach((p) => {
           document.getElementById([p[0], p[1]]).style.backgroundColor = "blue"; 
         })
@@ -267,6 +205,161 @@ function horizonSelect(shipBody, center){
   }   
 }
 
+function manualSelect(shipBody, center){
+  const xVal = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+  const yVal = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  let arrPairs = play1tileArr.reverse();
+  let cTile; 
+  
+  for(let i = 0; i < play1tileArr.length; i++){
+    let xTile = arrPairs[i][0];
+    let yTile = arrPairs[i][1];
+    let xPlace = xVal.indexOf(xTile);
+    let yPlace = yVal.indexOf(yTile);
+    let mouseArr = [];
+    let adjust = center;
+    let leaveArr = [];
+    cTile = document.getElementById([arrPairs[i]]);
+  }
+
+
+}
+
+function vertHighlight(pointedArr, bodyArr, shipBody, adjustedArr, adj, index){
+  pointedArr.push(bodyArr);
+
+  let yCatch = [];
+  let adjustedY = [];
+
+    if(pointedArr.length === shipBody){
+      pointedArr.forEach((x) => {
+        yCatch.push(x[1])
+      })
+    }
+    if(yCatch.length === shipBody){
+      let adjustF = 0;
+      if(yCatch[yCatch.length-1] > 10){
+        adjustF = 10 - yCatch[yCatch.length-1];
+      }else if(yCatch[0] === 0){
+        adjustF = 1;
+      }else if(yCatch[0] === -1){
+        adjustF = 2
+      }else {
+        adj = 0;
+      }
+      yCatch.forEach((p) => {
+        adjustedY.push(p + adjustF);
+      })
+    }
+    if(adjustedY.length === shipBody){
+      adjustedY.forEach((L) => {
+        adjustedArr.push([pointedArr[index][0], L]);
+        document.getElementById([pointedArr[index][0], L]).style.backgroundColor = "yellow"
+      })
+    }
+}
+
+function horzHightlight(pointedArr, bodyArr, shipBody, adjustedArr, xArr,){
+  pointedArr.push(bodyArr);
+
+  let xCatch = [];
+  let xIndex = [];
+    if(pointedArr.length === shipBody){
+      pointedArr.forEach((x) => {
+        xCatch.push(x[0]);
+        let xNum = xArr.indexOf(x[0]);
+        xIndex.push(xNum);
+      })
+    }
+
+    let cFactor = 0;
+    let shortArr = [];
+    xIndex.forEach((r) => {
+      if(r === -1){
+        cFactor++
+      } else {
+        shortArr.push(r);
+      }
+    })
+
+    if(shortArr[shortArr.length-1] === 0){
+      while(shortArr.length < shipBody){
+        shortArr.unshift(shortArr[0]+1);
+      }
+    } else if(shortArr[0] >= 9){
+      while(shortArr.length < shipBody){
+        shortArr.push(shortArr[shortArr.length -1] -1);
+      }
+    }
+
+    if(xIndex.length === shipBody){
+      shortArr.forEach((p) => {
+        adjustedArr.push([xArr[p], bodyArr[1]]);
+        document.getElementById([xArr[p], bodyArr[1]]).style.backgroundColor = "yellow";
+      })
+    }
+}
+
+function noHightlight(adjustedArr, pointedArr){
+  adjustedArr.forEach((p) => {
+    document.getElementById([p[0], p[1]]).style.backgroundColor = "blanchedAlmond";
+  })
+  pointedArr = [];
+}
+
+let shipBtn = document.createElement("div");
+  shipBtn.style.width = "25px";
+  shipBtn.style.height = "25px";
+  shipBtn.style.backgroundColor = "green";
+
+document.body.appendChild(shipBtn);
+
+shipBtn.addEventListener('mousedown', (event) => {
+  let shiftX = event.clientX - shipBtn.getBoundingClientRect().left;
+  let shiftY = event.clientY - shipBtn.getBoundingClientRect().top;
+
+  let currentDroppable = null;
+
+  shipBtn.style.position = 'absolute';
+  shipBtn.style.zIndex = 1000;
+
+  document.body.append(dragButton);
+
+  moveAt(event.pageX, event.pageY);
+
+  function moveAt(pageX, pageY){
+    shipBtn.style.left = pageX - shiftX + 'px';
+    shipBtn.style.top = pageY - shiftY + 'px';
+  }
+
+  function onMouseMove(event){
+    moveAt(event.pageX, event.pageY);
+
+    shipBtn.hidden = true;
+    let shipTile = document.elementFromPoint(event.clientX, event.clientY);
+    shipBtn.hidden = false;
+
+    if(!shipTile) return;
+
+    let droppableBelow = shipTile.closest(".playerTiles");
+    if(currentDroppable != droppableBelow){
+      if(currentDroppable){
+        leaveDroppable(currentDroppable);
+      }
+      currentDroppable = droppableBelow;
+      if(currentDroppable){
+        enterDroppable(currentDroppable);
+      }
+    }
+  }
+  document.addEventListener('mousemove', onMouseMove);
+
+  shipBtn.addEventListener('mouseup', () => {
+    document.removeEventListener('mousemove', onMouseMove);
+    shipBtn.onmouseup = null;
+  })
+
+})
 //add uniqChecker
 const drawShipCard = document.createElement("div");
 
@@ -339,9 +432,11 @@ const mnlCarrier = document.createElement("div");
 
   const cVert = document.createElement("button");
     cVert.innerText = "CarrVert";
+    cVert.classList.add("shipDrag");
   
   const cHorz = document.createElement("button");
     cHorz.innerText = "CarrHors";
+    cHorz.classList.add("shipDrag");
 
   mnlCarrier.appendChild(cVert);
   mnlCarrier.appendChild(cHorz);
@@ -352,9 +447,11 @@ const mnlBattleShip = document.createElement("div");
 
   const bVert = document.createElement("button");
     bVert.innerText = "BttlVert";
-  
+    bVert.classList.add("shipDrag");
+
   const bHorz = document.createElement("button");
     bHorz.innerText = "BttlHors";
+    bHorz.classList.add("shipDrag");
 
   mnlBattleShip.appendChild(bVert);
   mnlBattleShip.appendChild(bHorz);
@@ -365,9 +462,11 @@ const mnlDestroyer = document.createElement("div");
 
   const dVert = document.createElement("button");
     dVert.innerText = "DestVert";
-  
+    dVert.classList.add("shipDrag");
+
   const dHorz = document.createElement("button");
     dHorz.innerText = "DestHors";
+    dHorz.classList.add("shipDrag");
 
   mnlDestroyer.appendChild(dVert);
   mnlDestroyer.appendChild(dHorz);
@@ -378,9 +477,11 @@ const mnlSubmarine = document.createElement("div");
 
   const sVert = document.createElement("button");
     sVert.innerText = "SubmVert";
-  
+    sVert.classList.add("shipDrag");
+
   const sHorz = document.createElement("button");
     sHorz.innerText = "SubmHors";
+    sHorz.classList.add("shipDrag");
 
   mnlSubmarine.appendChild(sVert);
   mnlSubmarine.appendChild(sHorz);
@@ -391,9 +492,11 @@ const mnlPatrolBoat = document.createElement("div");
 
   const pVert = document.createElement("button");
     pVert.innerText = "PtrlVert";
-  
+    pVert.classList.add("shipDrag");
+
   const pHorz = document.createElement("button");
     pHorz.innerText = "PtrlHors";
+    pHorz.classList.add("shipDrag");
 
   mnlPatrolBoat.appendChild(pVert);
   mnlPatrolBoat.appendChild(pHorz);
@@ -404,11 +507,11 @@ manualShips.appendChild(mnlDestroyer);
 manualShips.appendChild(mnlSubmarine);
 manualShips.appendChild(mnlPatrolBoat);
 
+
 drawShipCard.appendChild(manualShips);
 
 cVert.addEventListener("click", () => {
   verticalSelect(5, 2);
-  //0 
 })
 cHorz.addEventListener("click", () => {
   horizonSelect(5, 2);
@@ -416,7 +519,6 @@ cHorz.addEventListener("click", () => {
 
 bVert.addEventListener("click", () => {
   verticalSelect(4, 2);
-  //1
 })
 
 bHorz.addEventListener("click", () => {
@@ -424,26 +526,23 @@ bHorz.addEventListener("click", () => {
 })
 
 dVert.addEventListener("click", () => {
-  verticalSelect(3, 2);
-  //2
+  verticalSelect(3, 1);
 })
 
 dHorz.addEventListener("click", () => {
-  horizonSelect(3, 2);
+  horizonSelect(3, 1);
 })
 
 sVert.addEventListener("click", () => {
-  verticalSelect(3, 2);
-  //3
+  verticalSelect(3, 1);
 })
 
 sHorz.addEventListener("click", () => {
-  horizonSelect(3, 2);
+  horizonSelect(3, 1);
 })
 
 pVert.addEventListener("click", () => {
   verticalSelect(2, 0);
-  //4
 })
 
 pHorz.addEventListener("click", () => {
@@ -452,3 +551,93 @@ pHorz.addEventListener("click", () => {
 
 document.body.appendChild(component());
 
+
+const dragShip = document.createElement("button");
+  dragShip.style.width = "20px";
+  dragShip.style.height ="20px";
+  dragShip.innerText = "dragtoboard";
+  dragShip.id = "draggable"
+  dragShip.classList.add("dragtoboard")
+
+document.body.appendChild(dragShip);
+
+const dragButton = document.getElementById("draggable")
+
+
+
+dragButton.onmousedown = function(event){
+  let shiftX = event.clientX - dragButton.getBoundingClientRect().left;
+  let shiftY = event.clientY - dragButton.getBoundingClientRect().top;
+  let currentDroppable = null;
+
+  dragButton.style.position = 'absolute';
+  dragButton.style.zIndex = 1000;
+
+  document.body.append(dragButton);
+
+  moveAt(event.pageX, event.pageY);
+
+  function moveAt(pageX, pageY){
+    dragButton.style.left = pageX - shiftX + 'px';
+    dragButton.style.top = pageY - shiftY + 'px';
+  }
+
+  function onMouseMove(event){
+    moveAt(event.pageX, event.pageY);
+
+    dragButton.hidden = true;
+    let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+    dragButton.hidden = false;
+
+    if(!elemBelow) return;
+
+    let droppableBelow = elemBelow.closest('.playerTiles');
+    if(currentDroppable != droppableBelow){
+      if(currentDroppable){
+        leaveDroppable(currentDroppable);
+      }
+      currentDroppable = droppableBelow;
+      if(currentDroppable){
+        enterDroppable(currentDroppable);
+      }
+    }
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+
+  dragButton.onmouseup = function(){
+    document.removeEventListener('mousemove', onMouseMove);
+    dragButton.onmouseup =null;
+    // dragButton.hidden = true;
+  }
+
+}
+
+function enterDroppable(elem){
+    elem.style.backgroundColor = 'pink';
+  }
+
+  function leaveDroppable(elem) {
+    elem.style.backgroundColor = '';
+  }
+
+
+  dragButton.ondragstart = function(){
+    return false;
+  };
+
+
+const drop = document.createElement("div");
+  drop.style.border =  "thick solid black";
+  drop.style.width = "150px";
+  drop.style.height = "150px";
+  drop.style.backgroundColor = "green";
+  drop.classList.add('droppable')
+
+  const space = document.createElement("div");
+  space.style.border =  "thick solid black";
+  space.style.width = "50px";
+  space.style.height = "50px";
+  space.style.backgroundColor = "yellow";
+
+    document.body.appendChild(drop);

@@ -214,6 +214,11 @@ export class ships{
 
 }
 
+class manualShips{
+    constructor(){
+        
+    }
+}
 // function removeBoat(tileHIt){
 //     //choose tile coordinate
 //     //reassign adjList = [];
