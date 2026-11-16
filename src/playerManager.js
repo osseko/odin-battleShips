@@ -144,3 +144,51 @@ function horizonSelect(shipBody, center){
       })  
   }   
 }
+
+
+shipBtn.addEventListener('mousedown', (event) => {
+  let shiftX = event.clientX - shipBtn.getBoundingClientRect().left;
+  let shiftY = event.clientY - shipBtn.getBoundingClientRect().top;
+
+  let currentDroppable = null;
+
+  shipBtn.style.position = 'absolute';
+  shipBtn.style.zIndex = 1000;
+
+  document.body.append(dragButton);
+
+  moveAt(event.pageX, event.pageY);
+
+  function moveAt(pageX, pageY){
+    shipBtn.style.left = pageX - shiftX + 'px';
+    shipBtn.style.top = pageY - shiftY + 'px';
+  }
+
+  function onMouseMove(event){
+    moveAt(event.pageX, event.pageY);
+
+    shipBtn.hidden = true;
+    let shipTile = document.elementFromPoint(event.clientX, event.clientY);
+    shipBtn.hidden = false;
+
+    if(!shipTile) return;
+
+    let droppableBelow = shipTile.closest(".playerTiles");
+    if(currentDroppable != droppableBelow){
+      if(currentDroppable){
+        leaveDroppable(currentDroppable);
+      }
+      currentDroppable = droppableBelow;
+      if(currentDroppable){
+        enterDroppable(currentDroppable);
+      }
+    }
+  }
+  document.addEventListener('mousemove', onMouseMove);
+
+  shipBtn.addEventListener('mouseup', () => {
+    document.removeEventListener('mousemove', onMouseMove);
+    shipBtn.onmouseup = null;
+  })
+
+})
